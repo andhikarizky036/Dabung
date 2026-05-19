@@ -86,6 +86,9 @@ export default function App() {
   const [userName, setUserName] = useState('Agnia Nur Nazhifa');
   const [userPhoto, setUserPhoto] = useState('');
   
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginError, setLoginError] = useState(false);
+  
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [newGoalTarget, setNewGoalTarget] = useState('10000');
   const [newGoalImage, setNewGoalImage] = useState('');
@@ -248,10 +251,15 @@ export default function App() {
                       transition={{ delay: 0.4 }}
                       className="w-full space-y-4"
                     >
-                      <div className="glass-panel p-4 rounded-2xl border border-white/5">
+                      <div className={`glass-panel p-4 rounded-2xl border ${loginError ? 'border-red-500/50 bg-red-500/5' : 'border-white/5'}`}>
                         <input 
                           type="text" 
                           placeholder="Username" 
+                          value={loginUsername}
+                          onChange={(e) => {
+                            setLoginUsername(e.target.value);
+                            setLoginError(false);
+                          }}
                           className="w-full bg-transparent text-white focus:outline-none font-bold"
                         />
                       </div>
@@ -263,10 +271,26 @@ export default function App() {
                         />
                       </div>
                       
+                      {loginError && (
+                        <motion.p 
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-red-400 text-[10px] font-bold text-center uppercase tracking-wider"
+                        >
+                          Username harus diisi!
+                        </motion.p>
+                      )}
+                      
                       <button 
                         onClick={() => {
-                          setIsLoggedIn(true);
-                          setActiveScreen('home');
+                          if (loginUsername.trim() !== "") {
+                            setUserName(loginUsername);
+                            setIsLoggedIn(true);
+                            setActiveScreen('home');
+                            setLoginError(false);
+                          } else {
+                            setLoginError(true);
+                          }
                         }}
                         className="w-full bg-white text-[#0f172a] font-black py-5 rounded-[24px] uppercase tracking-widest text-xs active:scale-95 transition-all shadow-xl shadow-white/10 mt-4"
                       >
